@@ -1,0 +1,65 @@
+#!use:std,io,ss+
+$!mainA {
+    
+    if argc != 2 {
+        printf("usage: %s <mcript code>", argv[0])
+        ret 1
+    }
+
+    i16 *cells = alloc(i16, 100)
+    $!lop(i16;i;0..100) {
+        cells[i] = 0
+    }
+    U16 pc = 0
+    U16 cc = 0
+    U32 prog_size = strlen(argv[1])
+    const str prog = argv[1]
+
+    $!loop {
+        switch (prog[pc]) {
+            case '[':
+                cc --
+                break
+            case ']':
+                cc ++
+                break
+            case '+':
+                cells[cc] ++
+                break
+            case '4':
+                cells[cc] += 2
+                break
+            case '-':
+                cells[cc] --
+                break
+            case 'p':
+                printf("%d", cells[cc])
+                break
+            case 'c':
+                putchar(cells[cc])
+                break
+            case '1':
+                cells[cc] *= cells[cc+1]
+                break
+            case 'j':
+                if cells[cc] == 0 {
+                    pc = cells[cc+1]
+                }
+                break
+            case 'g':
+                pc = cells[cc]
+                break
+            case 'h':
+                ret 0
+                break
+            default:
+                printf("incorrect instruction '%c'", prog[pc])
+                ret 1
+                break
+        }
+        pc ++
+    }
+
+    free(cells)
+    ret 0
+}
