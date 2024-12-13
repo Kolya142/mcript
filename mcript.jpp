@@ -2,7 +2,7 @@
 $!mainA {
     
     if argc != 2 {
-        printf("usage: %s <mcript code>", argv[0])
+        pf("usage: %s <mcript code>", argv[0])
         ret 1
     }
 
@@ -16,7 +16,7 @@ $!mainA {
     const str prog = argv[1]
 
     $!loop {
-        switch (prog[pc]) {
+        switch prog[pc] {
             case '[':
                 cc --
                 break
@@ -33,7 +33,7 @@ $!mainA {
                 cells[cc] --
                 break
             case 'p':
-                printf("%d", cells[cc])
+                pf("%d", cells[cc])
                 break
             case 'c':
                 putchar(cells[cc])

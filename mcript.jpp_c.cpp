@@ -1,19 +1,24 @@
+#ifndef jppt
+#define jppt
+#define pi(I) printf("%d", I)
+#define px(I) printf("%02X", I)
+#define pf printf
 #ifdef __cplusplus
 #include <cstdint>
 #else
 #include <stdint.h>
 #endif
-#define i8 int8_t
+#define i8 char
 #define i16 int16_t
 #define i32 int
-#define i64 long
-#define i128 long long
+#define i64 long long
+#define i128 __int128_t
 #define u0 void
-#define u8 char
+#define u8 unsigned char
 #define u16 uint16_t
-#define u32 uint
-#define u64 ulong
-#define u128 ulong long
+#define u32 unsigned int
+#define u64 unsigned long long
+#define u128 __uint128_t
 #define I8 i8
 #define I16 i16
 #define I32 i32
@@ -31,69 +36,70 @@
 #define pbegin Nabs::PFunc profiler_wrap = Nabs::PBegin(__FILE__, __FUNCTION__, __LINE__)
 #define pend Nabs::PEnd(profiler_wrap)
 #define ppbegin Nabs::PClear()
-#define str u8*
-
+#define str i8*
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #
 int main(int argc, char** argv) {
-if( argc != 2 ){
-printf("usage: %s <mcript code>", argv[0]);
-ret 1;
-}
-i16 *cells = alloc(i16, 100);
-for (i16 i = 0; i < 100; i++) {
-cells[i] = 0;
-}
-U16 pc = 0;
-U16 cc = 0;
-U32 prog_size = strlen(argv[1]);
-const str prog = argv[1];
-for (;;) {
-switch (prog[pc]) {
-case '[':;
-cc --;
-break;
-case ']':;
-cc ++;
-break;
-case '+':;
-cells[cc] ++;
-break;
-case '4':;
-cells[cc] += 2;
-break;
-case '-':;
-cells[cc] --;
-break;
-case 'p':;
-printf("%d", cells[cc]);
-break;
-case 'c':;
-putchar(cells[cc]);
-break;
-case '1':;
-cells[cc] *= cells[cc+1];
-break;
-case 'j':;
-if( cells[cc] == 0 ){
-pc = cells[cc+1];
-}
-break;
-case 'g':;
-pc = cells[cc];
-break;
-case 'h':;
-ret 0;
-break;
-default:;
-printf("incorrect instruction '%c'", prog[pc]);
-ret 1;
-break;
-}
-pc ++;
-}
-free(cells);
-ret 0;
+    ;
+    if( argc != 2 ){
+        printf("usage: %s <mcript code>", argv[0]);
+        ret 1;
+    }
+    i16 *cells = alloc(i16, 100);
+    for (i16 i = 0; i < 100; i++) {
+        cells[i] = 0;
+    }
+    U16 pc = 0;
+    U16 cc = 0;
+    U32 prog_size = strlen(argv[1]);
+    const str prog = argv[1];
+    for (;;) {
+        switch( prog[pc] ){
+            case '[':
+                cc --;
+                break;
+            case ']':
+                cc ++;
+                break;
+            case '+':
+                cells[cc] ++;
+                break;
+            case '4':
+                cells[cc] += 2;
+                break;
+            case '-':
+                cells[cc] --;
+                break;
+            case 'p':
+                printf("%d", cells[cc]);
+                break;
+            case 'c':
+                putchar(cells[cc]);
+                break;
+            case '1':
+                cells[cc] *= cells[cc+1];
+                break;
+            case 'j':
+                if( cells[cc] == 0 ){
+                    pc = cells[cc+1];
+                }
+                break;
+            case 'g':
+                pc = cells[cc];
+                break;
+            case 'h':
+                ret 0;
+                break;
+            default:
+                printf("incorrect instruction '%c'", prog[pc]);
+                ret 1;
+                break;
+        }
+        pc ++;
+    }
+    free(cells);
+    ret 0;
 }
